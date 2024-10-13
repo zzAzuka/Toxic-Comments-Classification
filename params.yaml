@@ -1,2 +1,12 @@
-key: val
-key2: val2
+embedding_dim: [100, 150, 200, 250, 300]
+lstm_units1: [64, 128, 192, 256]
+lstm_units2: [32, 64, 96, 128]
+dense_units1: [64, 96, 128]
+dense_units2: [32, 48, 64]
+dropout_rate1: [0.2, 0.3, 0.4, 0.5]
+dropout_rate2: [0.2, 0.3, 0.4, 0.5]
+batch_size: 32
+epochs: 20
+learning_rate: 0.001
+loss_function: binary_crossentropy
+optimizer: adam
