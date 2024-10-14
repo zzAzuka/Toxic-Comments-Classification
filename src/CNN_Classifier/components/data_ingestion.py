@@ -6,8 +6,8 @@ from CNN_Classifier.utils.common import get_size
 from CNN_Classifier.entity.config_entity import DataIngestionConfig
 from pathlib import Path
 import pandas as pd
-import re
-
+from tensorflow.keras.layers import TextVectorization # type: ignore
+import tensorflow as tf
 
 class DataIngestion:
     def __init__(self, config: DataIngestionConfig):
@@ -34,14 +34,6 @@ class DataIngestion:
         os.makedirs(unzip_path, exist_ok=True)
         with zipfile.ZipFile(self.config.local_data_file, 'r') as zip_ref:
             zip_ref.extractall(unzip_path)
-    
-    def clean_text(self, text):
-        if isinstance(text, str):
-            text = text.replace('\n', ' ')
-            text = re.sub(r"[^a-zA-Z0-9\s.,!?']", ' ', text)
-            text = re.sub(r'\s+', ' ', text)
-            return text.strip()
-        return ""
 
     def load_data(self):
         csv_files = [f for f in os.listdir(self.config.unzip_dir) if f.endswith('.csv')]
@@ -54,14 +46,26 @@ class DataIngestion:
         df = pd.read_csv(csv_path)
         logger.info(f"CSV file {csv_path} loaded successfully.")
         
-        df = self.preprocess_data(df)
-        return df
+        X = df['comment_text'].dropna()
+        y = df[df.columns[2:]].dropna().values
+        return X,y
 
-    def preprocess_data(self, df):
-        df = df.dropna()  # Example of basic preprocessing
-        if 'comment_text' in df.columns:
-            df['comment_text'] = df['comment_text'].apply(self.clean_text)
-        return df
+    def vectorization_dataset(self,X,y):
+        MAX_FEATURES = self.config.features
+        vectorizer = TextVectorization(max_tokens=MAX_FEATURES, output_sequence_length=self.config.output_len, output_mode='int')
+        vectorizer.adapt(X.values)
+        vectorized_text = vectorizer(X.values)
+        dataset = tf.data.Dataset.from_tensor_slices((vectorized_text, y))
+        dataset = dataset.cache()
+        dataset = dataset.shuffle(160000)
+        dataset = dataset.batch(16)
+        dataset = dataset.prefetch(8)
+        train = dataset.take(int(len(dataset)*.8))
+        val = dataset.skip(int(len(dataset)*.8)).take(int(len(dataset)*.1))
+        test = dataset.skip(int(len(dataset)*.9)).take(int(len(dataset)*.1))
+
+        return train, val, test
+ 
     
 
 

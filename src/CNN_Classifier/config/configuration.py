@@ -1,6 +1,6 @@
 from CNN_Classifier.constants import *
 from CNN_Classifier.utils.common import read_yaml, create_directories
-from CNN_Classifier.entity.config_entity import DataIngestionConfig, PrepareBaseModelConfig
+from CNN_Classifier.entity.config_entity import DataIngestionConfig
 
 class ConfigurationManager:
     def __init__(
@@ -22,7 +22,9 @@ class ConfigurationManager:
             root_dir=config.root_dir,
             source_URL=config.source_URL,
             local_data_file=config.local_data_file,
-            unzip_dir=config.unzip_dir
+            unzip_dir=config.unzip_dir,
+            features=config.features,
+            output_len=config.output_len
         )
 
         return data_ingestion_config

@@ -14,9 +14,9 @@ class DataIngestionTrainingPipeline:
         data_ingestion = DataIngestion(config=data_ingestion_config)
         data_ingestion.download_file()
         data_ingestion.extract_zip_file()
-        df = data_ingestion.load_data()
-        return df
-
+        X,y = data_ingestion.load_data()
+        train, val, test = data_ingestion.vectorization_dataset(X,y)
+        return train, val, test
 if __name__ == '__main__':
     try:
         logger.info(f">>>>>> Stage {STAGE_NAME} Started <<<<<<")

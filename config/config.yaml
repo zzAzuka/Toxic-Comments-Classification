@@ -6,3 +6,5 @@ data_ingestion:
   source_URL: https://github.com/zzAzuka/Data-Storage/raw/refs/heads/main/TCC_Train_Data_New.zip
   local_data_file: artifacts/data_ingestion/data.zip
   unzip_dir: artifacts/data_ingestion
+  features: 200000
+  output_len: 1800
