@@ -8,3 +8,11 @@ data_ingestion:
   unzip_dir: artifacts/data_ingestion
   features: 200000
   output_len: 1800
+
+model_train:
+  root_dir: artifacts/model_train
+  trained_model_path: artifacts/model_train/trained_model.h5
+  features: 200000
+  loss: BinaryCrossentropy
+  optimizer: Adam
+  epochs: 1

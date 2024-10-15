@@ -1,6 +1,6 @@
 from CNN_Classifier.constants import *
 from CNN_Classifier.utils.common import read_yaml, create_directories
-from CNN_Classifier.entity.config_entity import DataIngestionConfig
+from CNN_Classifier.entity.config_entity import DataIngestionConfig, ModelTrainConfig
 
 class ConfigurationManager:
     def __init__(
@@ -28,3 +28,19 @@ class ConfigurationManager:
         )
 
         return data_ingestion_config
+    
+    def get_model_train_config(self) -> ModelTrainConfig:
+        config = self.config.model_train
+
+        create_directories([config.root_dir])
+
+        model_train_config = ModelTrainConfig(
+            root_dir = config.root_dir,
+            trained_model_path = config.trained_model_path,
+            features =config.features,
+            loss = config.loss,
+            optimizer = config.optimizer,
+            epochs = config.epochs
+        )
+
+        return model_train_config

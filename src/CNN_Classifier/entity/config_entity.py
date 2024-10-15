@@ -10,3 +10,12 @@ class DataIngestionConfig:
     unzip_dir: Path
     features: int
     output_len: int
+
+@dataclass(frozen=True)
+class ModelTrainConfig:
+    root_dir: Path
+    trained_model_path: Path
+    features: int
+    loss: str
+    optimizer: str
+    epochs: int
